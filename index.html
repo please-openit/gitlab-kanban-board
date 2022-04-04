@@ -1,0 +1,402 @@
+<html>
+
+<head>
+    <title>Board</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Please-open.it time tracker">
+    <meta name="author" content="please-open.it">
+    <meta name="robots" content="nofollow">
+    <link href="./css/creative.css" rel="stylesheet">
+    <script>
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text/plain", ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var issueId = ev.dataTransfer.getData("text/plain");
+            tagToRemove=document.getElementById(issueId).parentElement.id;
+            ev.target.appendChild(document.getElementById(issueId));
+            tagToAdd = ev.target.id;
+            updateTask(issueId, tagToRemove, tagToAdd);
+        }
+    </script>
+</head>
+
+
+<body id="page-top">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <a class="navbar-brand" href="">
+                    <img src="logo.svg" height="42" width="42"> Please Open It - Tasks board</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="navbar-brand" id="username" href="">Username</div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="masthead text-left text-white d-flex bg-dark" style="min-height: 7%;">
+        <div class="container my-auto ">
+            
+        </div>
+        </div>
+    </header>
+
+
+    <section id="portfolio" class="masthead">
+        <div class="row text-center" style="height: 100%; margin-left: 10px; margin-right: 10px;">
+            <div class="col-3" id="backlog" ondragover="allowDrop(event)" ondrop="drop(event)"
+                style="border-left: 0px; border-top: 0px; border-bottom: 0px ; border-right: 6px; border-style: inset;">
+                <h4>Backlog</h4>
+                    <hr />
+            </div>
+
+            <div class="col-3" id="Todo" ondragover="allowDrop(event)" ondrop="drop(event)"
+                style="border-left: 0px; border-top: 0px; border-bottom: 0px ; border-right: 6px; border-style: inset;">
+                <h4>Todo</h4>
+                    <hr />
+            </div>
+            <div class="col-3" id="Doing" ondragover="allowDrop(event)" ondrop="drop(event)"
+                style="border-left: 0px; border-top: 0px; border-bottom: 0px ; border-right: 6px; border-style: inset;">
+                    <h4>Doing</h4>
+                    <hr />
+            </div>
+            <div class="col-3" id="Done" ondragover="allowDrop(event)" ondrop="drop(event)">
+                    <h4>Done</h4>
+                    <hr />
+            </div>
+        </div>
+    </section>
+
+    <script id="issuesBacklogTemplate" type="text/template">
+        {{#.}}
+        <div class="card" id="{{id}}" iid="{{iid}}" project_id="{{project_id}}" style="margin-bottom: 10px" draggable="true" ondragstart="drag(event)">
+            <div class="card-body">
+              <a href="{{web_url}}" target="_blank"><b class="card-title">{{title}}</b></a><br />
+              <div id="{{id}}labels">
+                <span id="{{id}}backlog" class="badge badge-pill badge-info"></span>
+              {{#labels}}
+                <span id="{{id}}{{.}}" class="badge badge-pill badge-info">{{.}}</span>
+              {{/labels}}
+              </div>
+
+              
+              <p class="card-text"><p>
+                <a class="badge badge-light" data-toggle="collapse" href="#collapse{{id}}" role="button" aria-expanded="false" aria-controls="collapse{{id}}">
+                  More...
+                </a>
+              </p>
+              <div class="collapse" id="collapse{{id}}">
+                <div class="card card-body">
+                  {{description}}
+                </div>
+              </div></p>
+              <p class=""><a href="{{milestone.web_url}}" target="_blank">{{milestone.title}}</a></p>
+              <p class=""><i>{{project_id | project}}</i></p>
+              
+              <span class="badge badge-pill {{due_date | date_blink}}">{{due_date | date}}</span>
+            </div>
+          </div>
+        {{/.}}
+    </script>
+
+    <script id="issuesUnassignedBacklogTemplate" type="text/template">
+        {{#.}}
+        <div class="card" id="{{id}}" iid="{{iid}}" project_id="{{project_id}}" style="margin-bottom: 10px; color: gray; font-size: 13px; " draggable="true" ondragstart="drag(event)">
+            <div class="card-body">
+              <a href="{{web_url}}" style="color: gray" target="_blank"><b class="card-title">{{title}}</b></a><br />
+              <div id="{{id}}labels">
+                <span id="{{id}}backlog" class="badge badge-pill badge-info"></span>
+              {{#labels}}
+                <span id="{{id}}{{.}}" class="badge badge-pill badge-info">{{.}}</span>
+              {{/labels}}
+              </div>
+              <p class="card-text"><p>
+                <a class="badge badge-light" data-toggle="collapse" href="#collapse{{id}}" role="button" aria-expanded="false" aria-controls="collapse{{id}}">
+                  More...
+                </a>
+              </p>
+              <div class="collapse" id="collapse{{id}}">
+                <div class="card card-body">
+                  {{description}}
+                </div>
+              </div></p>
+              <p class=""><a href="{{milestone.web_url}}" style="color: gray" target="_blank">{{milestone.title}}</a></p>
+              <p class=""><i>{{project_id | project}}</i></p>
+              <p class=""><a href="{{milestone.web_url}}" style="color: gray" target="_blank">{{milestone.title}}</a></p>
+              <p class=""><i>{{project_id | project}}</i></p>
+              
+              <span class="badge badge-pill {{due_date | date_blink}}">{{due_date | date}}</span>
+            </div>
+          </div>
+        {{/.}}
+    </script>
+
+    <script id="issuesTemplate" type="text/template">
+        {{#.}}
+        <div class="card" id="{{id}}" iid="{{iid}}" project_id="{{project_id}}" style="margin-bottom: 10px" draggable="true" ondragstart="drag(event)">
+            <div class="card-body">
+              <a href="{{web_url}}" target="_blank"><b class="card-title">{{title}}</b></a><br />
+              <div id="{{id}}labels">
+              {{#labels}}
+                <span id="{{id}}{{.}}" class="badge badge-pill badge-info">{{.}}</span>
+              {{/labels}}
+              </div>
+              <p class="card-text md">{{description}}</p>
+              <p class=""><a href="{{milestone.web_url}}" target="_blank">{{milestone.title}}</a></p>
+              <p class=""><i>{{project_id | project}}</i></p>
+              
+              <span class="badge badge-pill {{due_date | date_blink}}">{{due_date | date}}</span>
+            </div>
+          </div>
+        {{/.}}
+    </script>
+
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js"></script>
+<script src="mustache-wax.js"></script>
+<script>
+
+    Mustache.Formatters = {
+        date: function (str) {
+            if (str == null) { return; }
+            var dt = new Date(str);
+            return (dt.getDate() + "/" + (dt.getMonth() + 1) + "/" + dt.getFullYear());
+        },
+        date_blink: function (str) {
+            if (str == null) { return; }
+            var today = new Date();
+            var dt = new Date(str);
+            if( ((dt.getTime() - today.getTime()) / (1000*60*60*24) ) < 2){
+                return ("blink_me badge-danger");
+            }
+            if( ((dt.getTime() - today.getTime()) / (1000*60*60*24) ) < 3){
+                return ("blink_me badge-warning");
+            }
+            if( ((dt.getTime() - today.getTime()) / (1000*60*60*24) ) < 4){
+                return ("badge-warning");
+            }
+            return "badge-primary";
+        },
+        project: function(str) {
+            return getProject(str);
+        }
+    };
+
+    token = getUrlParameter("token");
+    var user = getUser();
+    var username = user.username;
+    var userId = user.id;
+    $("#username").html(username);
+    getIssuesBacklog();
+    getIssuesUnassignedBacklog();
+    getIssuesTodo();
+    getIssuesDoing();
+    getIssuesDone();
+
+    function updateTask(issueId, tagToRemove, tagToAdd){
+        
+        if(tagToAdd == "backlog"){
+            tagToAdd = "";
+        }
+        document.getElementById(issueId+tagToRemove).innerHTML = tagToAdd;
+        document.getElementById(issueId+tagToRemove).id = issueId+tagToAdd;
+        if(tagToRemove == "backlog"){
+            tagToRemove = "";
+        }
+        projectId = document.getElementById(issueId).getAttribute("project_id");
+        iid = document.getElementById(issueId).getAttribute("iid");
+        jQuery.ajax({
+            url: "https://gitlab.com/api/v4/projects/"+projectId+"/issues/"+iid+"?add_labels="+tagToAdd+"&remove_labels="+tagToRemove+"&assignee_ids="+userId,
+            method: "PUT",
+            success: function (data) {
+                
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('PRIVATE-TOKEN', token);
+            },
+            async: false,
+        }).fail(function (response) {
+            console.error('Error: ' + response.responseText);
+        });
+        
+    }
+
+    function getUser() {
+        var user;
+        jQuery.ajax({
+            url: "https://gitlab.com/api/v4/user/",
+            success: function (data) {
+                user = data;
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('PRIVATE-TOKEN', token);
+            },
+            async: false,
+        }).fail(function (response) {
+            console.error('Error: ' + response.responseText);
+        });
+        return user;
+    }
+    function getIssuesBacklog() {
+        jQuery.ajax({
+            url: "https://gitlab.com/api/v4/issues?assignee_username=" + username + "&state=opened&not[labels][]=Todo&not[labels][]=Doing&not[labels][]=Done&scope=all",
+            success: function (data) {
+                var template = $("#issuesBacklogTemplate").html();
+                var output = Mustache.render(template, data);
+                $("#backlog").append(output);
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('PRIVATE-TOKEN', token);
+            },
+            async: false,
+        }).fail(function (response) {
+            console.error('Error: ' + response.responseText);
+        });
+    }
+    function getIssuesUnassignedBacklog() {
+        jQuery.ajax({
+            url: "https://gitlab.com/api/v4/issues?assignee_id=None&state=opened&not[labels][]=Todo&not[labels][]=Doing&not[labels][]=Done&scope=all",
+            success: function (data) {
+                var template = $("#issuesUnassignedBacklogTemplate").html();
+                var output = Mustache.render(template, data);
+                $("#backlog").append(output);
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('PRIVATE-TOKEN', token);
+            },
+            async: false,
+        }).fail(function (response) {
+            console.error('Error: ' + response.responseText);
+        });
+    }
+    function getIssuesTodo() {
+        jQuery.ajax({
+            url: "https://gitlab.com/api/v4/issues/?assignee_username=" + username + "&labels=Todo&state=opened&scope=all",
+            success: function (data) {
+                var template = $("#issuesTemplate").html();
+                var output = Mustache.render(template, data);
+                $("#Todo").append(output);
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('PRIVATE-TOKEN', token);
+            },
+            async: false,
+        }).fail(function (response) {
+            console.error('Error: ' + response.responseText);
+        });
+    }
+
+    function getIssuesDoing() {
+        jQuery.ajax({
+            url: "https://gitlab.com/api/v4/issues/?assignee_username=" + username + "&labels=Doing&state=opened&scope=all",
+            success: function (data) {
+                var template = $("#issuesTemplate").html();
+                var output = Mustache.render(template, data);
+                $("#Doing").append(output);
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('PRIVATE-TOKEN', token);
+            },
+            async: false,
+        }).fail(function (response) {
+            console.error('Error: ' + response.responseText);
+        });
+    }
+    function getIssuesDone() {
+        jQuery.ajax({
+            url: "https://gitlab.com/api/v4/issues/?assignee_username=" + username + "&labels=Done&state=opened&scope=all",
+            success: function (data) {
+                var template = $("#issuesTemplate").html();
+                var output = Mustache.render(template, data);
+                $("#Done").append(output);
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('PRIVATE-TOKEN', token);
+            },
+            async: false,
+        }).fail(function (response) {
+            console.error('Error: ' + response.responseText);
+        });
+    }
+    function getProject(id) {
+        var name = "";
+        jQuery.ajax({
+            url: "https://gitlab.com/api/v4/projects/" + id,
+            success: function (data) {
+                name = data.name_with_namespace
+            },
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('PRIVATE-TOKEN', token);
+            },
+            async: false,
+        }).fail(function (response) {
+            console.error('Error: ' + response.responseText);
+        });
+        return name;
+    }
+
+    function getUrlParameter(sParam) {
+        var sPageURL = window.location.search.substring(1),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+    };
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+    integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
+    crossorigin="anonymous"></script>
+
+<!-- Custom scripts for this template -->
+<script src="./js/creative.min.js"></script>
+<script src="./js/showdown.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+    var converter = new showdown.Converter();
+
+    document.querySelectorAll('p.md').forEach(block => {
+        var html = converter.makeHtml(block.textContent);
+        block.innerHTML = html;
+
+        mermaid.initialize({
+            startOnLoad: true, mermaid: {
+                callback: function (id) {
+                }
+            }
+        });
+    });
+    document.querySelectorAll('code').forEach(block => {
+        // then highlight each
+        hljs.highlightBlock(block);
+    });
+</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+</html>

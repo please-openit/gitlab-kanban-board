@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.yaml": "home-assistant"
+    },
+    "liveServer.settings.port": 5501
+}
