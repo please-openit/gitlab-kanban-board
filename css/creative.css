@@ -29,6 +29,12 @@
    border-width: 3px;
    border-color: rgba(34, 181, 115, 1);
  }
+ .progress {
+   height: 00.3rem;
+ }
+ .progress-bar {
+   background-color: rgba(34, 181, 115, 1);
+ }
  
  hr.light {
    border-color: #fff;
